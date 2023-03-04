@@ -3,7 +3,7 @@ trigger:
   - azure
 stages:  
   - stage:"vcs"
-     jobs:
+    jobs:
        - job: "vcs clone"
          steps:
            - task: Maven@3
@@ -17,4 +17,8 @@ stages:
                jdkDirectory: "/usr/lib/jvm/java-8-openjdk-amd64"
                mavenVersionOption: 'Path'
                MavenDirectory: '/usr/share/maven'
-               
+           - task: PublishPipelineArtifact@1  
+            inputs:
+               targetPath: '$(Pipeline.Workspace)'
+               artifact: "chaitu"
+               publishLocation: 'pipeline' 
