@@ -1,21 +1,20 @@
-pipeline {
-  agent {label'chaitanya'} 
-  stages {
-    stage('vcs') {
-        steps {
-          git url: 'https://github.com/sagilechaitanya/openmrs-core.git',
-            branch: 'declarative'  
-        }
-    }
-    stage('exportpath') {
-      steps {
-        sh 'export PATH="/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/:$PATH"'
-      }  
-    }
-    stage('mvnpackage') {
-      steps {
-        sh 'mvn clean package'
-      }  
-    }
-  } 
-}
+pool: "Default"
+trigger: 
+  - azure
+stages:  
+  - stage:"vcs"
+     jobs:
+       - job: "vcs clone"
+         steps:
+           - task: Maven@3
+             inputs: 
+               mavenPOMFile: 'pom.xml'
+               goals: 'package'
+               publishJUnitResults: true
+               testResultsFiles: '**/surefire-reports/TEST-*.xml'
+               javaHomeOption: 'Path'
+               jdkVersionOption: '1.8'
+               jdkDirectory: "/usr/lib/jvm/java-8-openjdk-amd64"
+               mavenVersionOption: 'Path'
+               MavenDirectory: '/usr/share/maven'
+               
